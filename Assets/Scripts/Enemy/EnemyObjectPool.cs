@@ -6,6 +6,7 @@ public class EnemyObjectPool : MonoBehaviour
     [SerializeField] private Enemy _prefab;
 
     private Queue<Enemy> _pool;
+    private List<Enemy> _allEnemies = new List<Enemy>();
 
     private void Awake()
     {
@@ -34,6 +35,7 @@ public class EnemyObjectPool : MonoBehaviour
         {
             Enemy enemy = Instantiate(_prefab);
             enemy.IsDestroyed += ReturnObject;
+            _allEnemies.Add(enemy);
 
             return enemy;
         }
@@ -49,11 +51,12 @@ public class EnemyObjectPool : MonoBehaviour
 
     public void Reset()
     {
-        foreach (Enemy enemy in _pool)
+        _pool.Clear();
+
+        foreach (Enemy enemy in _allEnemies)
         {
+            _pool.Enqueue(enemy);
             enemy.gameObject.SetActive(false);
         }
-
-        _pool.Clear();
     }
 }

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ProjectileObjectPool : MonoBehaviour
 {
     [SerializeField] private Projectile _prefab;
 
     private Queue<Projectile> _pool;
+    private List<Projectile> _allProjectiles = new List<Projectile>();
 
     private void Awake()
     {
@@ -34,6 +36,7 @@ public class ProjectileObjectPool : MonoBehaviour
         {
             Projectile projectile = Instantiate(_prefab);
             projectile.IsDestroyed += ReturnObject;
+            _allProjectiles.Add(projectile);
 
             return projectile;
         }
@@ -49,11 +52,12 @@ public class ProjectileObjectPool : MonoBehaviour
 
     public void Reset()
     {
-        foreach (Projectile projectile in _pool)
-        {
-            Destroy(projectile);
-        }
-
         _pool.Clear();
+
+        foreach (Projectile projectile in _allProjectiles)
+        {
+            _pool.Enqueue(projectile);
+            projectile.gameObject.SetActive(false);
+        }
     }
 }
