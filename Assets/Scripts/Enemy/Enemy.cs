@@ -11,19 +11,20 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _projectileSpeed = 2f;
 
     public event Action<Enemy> IsDestroyed;
+    public event Action ScoreAdded;
 
     private Coroutine _attackRoutine;
-    private EnemyCollisionsHandler _handler;
+    private EnemyCollisionsHandler _selfCollisionsHandler;
     private ProjectileObjectPool _projectilePool;
 
     private void Awake()
     {
-        _handler = GetComponent<EnemyCollisionsHandler>();
+        _selfCollisionsHandler = GetComponent<EnemyCollisionsHandler>();
     }
 
     private void OnEnable()
     {
-        _handler.CollisionDetected += ProcessCollision;
+        _selfCollisionsHandler.CollisionDetected += ProcessCollision;
 
         if (_attackRoutine != null)
         {
@@ -35,7 +36,7 @@ public class Enemy : MonoBehaviour
 
     private void OnDisable()
     {
-        _handler.CollisionDetected -= ProcessCollision;
+        _selfCollisionsHandler.CollisionDetected -= ProcessCollision;
     }
 
     public void SetProjectilePool(ProjectileObjectPool pool)
@@ -43,8 +44,13 @@ public class Enemy : MonoBehaviour
         _projectilePool = pool;
     }
 
-    private void ProcessCollision()
+    private void ProcessCollision(bool isDestroyedByPlayer)
     {
+        if (isDestroyedByPlayer)
+        {
+            ScoreAdded?.Invoke();
+        }
+
         IsDestroyed?.Invoke(this);
     }
 

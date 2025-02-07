@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnemyObjectPool : MonoBehaviour
 {
     [SerializeField] private Enemy _prefab;
+    [SerializeField] private ScoreCounter _scoreCounter;
 
     private Queue<Enemy> _pool;
     private List<Enemy> _allEnemies = new List<Enemy>();
@@ -19,6 +20,11 @@ public class EnemyObjectPool : MonoBehaviour
         {
             enemy.IsDestroyed += ReturnObject;
         }
+
+        foreach (Enemy enemy in _allEnemies)
+        {
+            enemy.ScoreAdded += AddScore;
+        }
     }
 
     private void OnDisable()
@@ -26,6 +32,11 @@ public class EnemyObjectPool : MonoBehaviour
         foreach (Enemy enemy in _pool)
         {
             enemy.IsDestroyed -= ReturnObject;
+        }
+
+        foreach (Enemy enemy in _allEnemies)
+        {
+            enemy.ScoreAdded -= AddScore;
         }
     }
 
@@ -35,6 +46,7 @@ public class EnemyObjectPool : MonoBehaviour
         {
             Enemy enemy = Instantiate(_prefab);
             enemy.IsDestroyed += ReturnObject;
+            enemy.ScoreAdded += AddScore;
             _allEnemies.Add(enemy);
 
             return enemy;
@@ -58,5 +70,9 @@ public class EnemyObjectPool : MonoBehaviour
             _pool.Enqueue(enemy);
             enemy.gameObject.SetActive(false);
         }
+    }
+    private void AddScore()
+    {
+        _scoreCounter.Add();
     }
 }

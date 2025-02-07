@@ -7,6 +7,7 @@ public class Game : MonoBehaviour
     [SerializeField] private ProjectileObjectPool _projectilePool;
     [SerializeField] private StartScreen _startScreen;
     [SerializeField] private EndGameScreen _endGameScreen;
+    [SerializeField] private ScoreCounter _scoreCounter;
 
     private void OnEnable()
     {
@@ -51,5 +52,6 @@ public class Game : MonoBehaviour
         _player.Reset();
         _enemyPool.Reset();
         _projectilePool.Reset();
+        _scoreCounter.Reset();
     }
 }

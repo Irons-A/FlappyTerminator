@@ -7,23 +7,23 @@ public class Projectile : MonoBehaviour
     [field: SerializeField] public bool IsAlly { get; private set; }
     [SerializeField] private float _movementSpeed = 0;
     
-    private ProjectileCollisionsHandler _handler;
+    private ProjectileCollisionsHandler _selfCollisionsHandler;
 
     public event Action<Projectile> IsDestroyed;
 
     private void Awake()
     {
-        _handler = GetComponent<ProjectileCollisionsHandler>();
+        _selfCollisionsHandler = GetComponent<ProjectileCollisionsHandler>();
     }
 
     private void OnEnable()
     {
-        _handler.CollisionDetected += ProcessCollision;
+        _selfCollisionsHandler.CollisionDetected += ProcessCollision;
     }
 
     private void OnDisable()
     {
-        _handler.CollisionDetected -= ProcessCollision;
+        _selfCollisionsHandler.CollisionDetected -= ProcessCollision;
     }
 
     private void Update()
